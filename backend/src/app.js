@@ -1,6 +1,7 @@
 import express from "express";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
+import accountRouter from "./routes/account.routes.js";
 
 const app = express();
 
@@ -9,5 +10,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
+app.use("/api/account", accountRouter);
 
 export default app;

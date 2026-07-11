@@ -1,5 +1,6 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import { sendRegistrationEmail } from "../services/email.service.js";
 
 const createToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "24h" });
@@ -47,6 +48,8 @@ export const registerUser = async (req, res) => {
       },
       token,
     });
+
+    await sendRegistrationEmail(user.email, user.name);
   } catch (error) {
     console.log("Server Error", error);
     res.status(500).json({

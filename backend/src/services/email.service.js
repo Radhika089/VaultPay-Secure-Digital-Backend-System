@@ -45,12 +45,12 @@ export const sendRegistrationEmail = async (userEmail, name) => {
 
   const text = `Hi ${name},
 
-Welcome to VaultPay!
+              Welcome to VaultPay!
 
-Your account has been created successfully.
+              Your account has been created successfully.
 
-Thanks,
-VaultPay Team`;
+              Thanks,
+              VaultPay Team`;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto;">
@@ -66,6 +66,85 @@ VaultPay Team`;
 
       <p>Thanks,<br><strong>VaultPay Team</strong></p>
     </div>
+  `;
+
+  await sendEmail(userEmail, subject, text, html);
+};
+
+// Transaction Success Email
+export const sendTransactionEmail = async (
+  userEmail,
+  name,
+  toAccount,
+  amount,
+) => {
+  const subject = "Transaction Successful";
+
+  const text = `
+    Hi ${name},
+
+    Your transaction was completed successfully.
+
+    Amount: ₹${amount}
+    Sent To: ${toAccount}
+
+    Thank you for using VaultPay.
+
+    - Team VaultPay
+    `;
+
+  const html = `
+    <h2>Transaction Successful 🎉</h2>
+    <p>Hi <strong>${name}</strong>,</p>
+    <p>Your transaction has been completed successfully.</p>
+
+    <ul>
+      <li><strong>Amount:</strong> ₹${amount}</li>
+      <li><strong>Sent To:</strong> ${toAccount}</li>
+    </ul>
+
+    <p>Thank you for using <strong>VaultPay</strong>.</p>
+  `;
+
+  await sendEmail(userEmail, subject, text, html);
+};
+
+// Transaction Failure Email
+export const sendTransactionFailureEmail = async (
+  userEmail,
+  name,
+  toAccount,
+  amount,
+) => {
+  const subject = "Transaction Failed";
+
+  const text = `
+    Hi ${name},
+
+    Unfortunately, your transaction could not be completed.
+
+    Amount: ₹${amount}
+    Recipient: ${toAccount}
+
+    No money has been deducted from your account. Please try again later.
+
+    - Team VaultPay
+    `;
+
+  const html = `
+    <h2>Transaction Failed ❌</h2>
+    <p>Hi <strong>${name}</strong>,</p>
+
+    <p>Unfortunately, your transaction could not be completed.</p>
+
+    <ul>
+      <li><strong>Amount:</strong> ₹${amount}</li>
+      <li><strong>Recipient:</strong> ${toAccount}</li>
+    </ul>
+
+    <p>No money has been deducted from your account. Please try again later.</p>
+
+    <p>Thank you,<br><strong>Team VaultPay</strong></p>
   `;
 
   await sendEmail(userEmail, subject, text, html);

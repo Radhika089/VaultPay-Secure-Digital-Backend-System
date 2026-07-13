@@ -124,6 +124,10 @@ export async function createTransaction(req, res) {
       { session },
     );
 
+    await (() => {
+      return new Promise((resolve) => setTimeout(resolve, 15 * 1000));
+    })();
+
     const creditLedgerEntry = await ledgerModel.create(
       [
         {
@@ -135,10 +139,6 @@ export async function createTransaction(req, res) {
       ],
       { session },
     );
-
-    // await (() => {
-    //   return new Promise((resolve) => setTimeout(resolve, 15 * 1000));
-    // })();
 
     transaction = await transactionModel.findOneAndUpdate(
       { _id: transaction._id },

@@ -1,6 +1,7 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { sendRegistrationEmail } from "../services/email.service.js";
+import tokenBackListModel from "../models/blackList.model.js";
 
 const createToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "24h" });
@@ -108,4 +109,24 @@ export const loginUser = async (req, res) => {
       message: "Server Error",
     });
   }
+};
+
+export const logoutUser = async (req, res) => {
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "User is not logged in.",
+    });
+  }
+
+  await tokenBackListModel.create({ token });
+
+  res.clearCookie("token");
+
+  return res.status(200).json({
+    success: true,
+    message: "User logged out successfully!",
+  });
 };

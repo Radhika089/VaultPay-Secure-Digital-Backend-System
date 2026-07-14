@@ -1,5 +1,6 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import tokenBackListModel from "../models/blackList.model.js";
 
 export async function authMiddleware(req, res, next) {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
@@ -8,6 +9,14 @@ export async function authMiddleware(req, res, next) {
     return res.status(401).json({
       success: false,
       message: "User must be logged In!",
+    });
+  }
+
+  const isBlackListed = await tokenBackListModel.findOne({ token });
+
+  if (isBlackListed) {
+    return res.status(401).json({
+      message: "Unauthorized  access, token is invalid!",
     });
   }
 
@@ -40,6 +49,14 @@ export async function authSystemUserMiddleware(req, res, next) {
     return res.status(400).json({
       success: false,
       message: "Unauthorized access, token is missing",
+    });
+  }
+
+  const isBlackListed = await tokenBackListModel.findOne({ token });
+
+  if (isBlackListed) {
+    return res.status(401).json({
+      message: "Unauthorized  access, token is invalid!",
     });
   }
 

@@ -124,9 +124,9 @@ export async function createTransaction(req, res) {
       { session },
     );
 
-    await (() => {
-      return new Promise((resolve) => setTimeout(resolve, 15 * 1000));
-    })();
+    // await (() => {
+    //   return new Promise((resolve) => setTimeout(resolve, 15 * 1000));
+    // })();
 
     const creditLedgerEntry = await ledgerModel.create(
       [
@@ -143,7 +143,7 @@ export async function createTransaction(req, res) {
     transaction = await transactionModel.findOneAndUpdate(
       { _id: transaction._id },
       { status: "COMPLETED" },
-      { session, new: true },
+      { session, returnDocument: "after" },
     );
 
     await session.commitTransaction();
@@ -160,7 +160,9 @@ export async function createTransaction(req, res) {
     });
   }
 
-  await sendTransactionEmail(req.user.email, req.user.name, amount, toAccount);
+  sendTransactionEmail(req.user.email, req.user.name, amount, toAccount).catch(
+    (err) => console.error(err),
+  );
 
   return res.status(201).json({
     success: true,
